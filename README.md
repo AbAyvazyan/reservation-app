@@ -2,8 +2,9 @@
 
 A single-room booking interface for a 09:00–18:00 working day: pick a date, see that day's bookings, and create, edit or delete a booking. Business rules are validated on the client and again by a strict mock server, which can answer `409 Conflict` even when the UI believed a slot was free. The UI handles that case without losing what the user typed.
 
-- **Demo:** _add deployed URL_
-- **Repo:** _add repository URL_
+- **Demo:** https://reservation-app-red.vercel.app/
+- **Repo:** https://github.com/AbAyvazyan/reservation-app
+- **How I worked with the AI:** [`AI-INTERACTION.md`](./AI-INTERACTION.md)
 
 ## Run it
 
@@ -121,6 +122,7 @@ Every control has a label; errors are tied to fields with `aria-invalid` / `aria
 
 ## How I worked with AI
 
+- Full prompt-by-prompt account: [`AI-INTERACTION.md`](./AI-INTERACTION.md).
 - **Plan first.** `PLAN.md` was written and reviewed before any code; `AI-Suggestions.md` records the tooling ideas.
 - **Agent instructions.** `AGENTS.md` (root and per folder) is the single source of truth; `CLAUDE.md` files just import it. Hooks block edits to generated files, lint on edit, and refuse to finish while typecheck or tests fail. Skills, commands and review subagents live in `.claude/`.
 - **Delegation.** Mechanical, well-specified work (tooling files, base components) went to a smaller model with a strict file boundary, and I reviewed the results; the business rules, API layer and conflict handling were written and tested directly.
@@ -146,4 +148,4 @@ Every control has a label; errors are tied to fields with `aria-invalid` / `aria
 
 ## Time spent
 
-_Fill in your actual hours here, e.g. planning, domain + tests, API + mocks, UI, polish._
+About **1 hour** of hands-on time, starting at 18:00 — well under the 4–6 hour guideline. That is only possible because the work was planned up front and implemented and reviewed with AI agents; the interaction log (`AI-INTERACTION.md`) shows exactly how.
