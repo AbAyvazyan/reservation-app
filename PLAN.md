@@ -172,9 +172,9 @@ Use `vi.setSystemTime` for "now" (avoid full fake timers with MSW/user-event, or
 - [x] 4. `shared/` (useNow, ErrorBoundary, base components, tokens), query keys, hooks, `useSelectedDate`. Commit.
 - [x] 5. UI: page, date picker, timeline, card, form + reducer, delete dialog, styles, responsive. Commit.
 - [x] 6. Conflict / 404 / error flows end-to-end + DemoControls + UI tests (conflict test first). Commit.
-- [ ] 7. GitHub Actions `.github/workflows/ci.yml`: `npm ci`, `lint`, `typecheck`, `test`, `build` on push/PR. Commit.
+- [x] 7. GitHub Actions `.github/workflows/ci.yml`: `npm ci`, `lint`, `typecheck`, `test`, `build` on push/PR. Commit.
 - [ ] 8. Per the user's global CLAUDE.md: run `snyk_code_scan` on new first-party code; fix findings; rescan until clean. Also `snyk_sca_scan` for deps.
-- [ ] 9. README (§13). Commit.
+- [x] 9. README (§13). Commit.
 - [ ] 10. `npm run lint && npm run typecheck && npm test && npm run build` green; `npm run preview` works with MSW. Deploy (Vercel/Netlify, build `npm run build`, output `dist`), confirm `mockServiceWorker.js` served. Push only when the user asks. User exports the chat transcript.
 
 - [ ] 11. Final code review: run `/code-review` with the Sonnet 5.5 model (and the `react-reviewer` / `a11y-auditor` subagents) over the whole diff once everything is finished. Fix confirmed findings in separate `fix:` commits, then re-run the quality gate.
