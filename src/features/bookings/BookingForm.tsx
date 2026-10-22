@@ -159,7 +159,7 @@ export function BookingForm({ state, existing, now, dispatch, onSubmit, onClose,
           value={values.start}
           options={startOptions(values.date, ctx)}
           issues={forField('start')}
-          disabled={startLocked}
+          disabled={startLocked && values.start === editing?.start}
           hint={startLocked ? 'The start cannot change once the meeting has begun.' : undefined}
           onChange={handleStartChange}
         />
@@ -191,7 +191,7 @@ export function BookingForm({ state, existing, now, dispatch, onSubmit, onClose,
       </fieldset>
 
       {(forField('form').length > 0 || forField('date').length > 0) && (
-        <ul className={styles.formErrors} aria-live="polite">
+        <ul className={styles.formErrors}>
           {[...forField('date'), ...forField('form')].map((issue) => (
             <li key={`${issue.code}-${issue.message}`}>{issue.message}</li>
           ))}

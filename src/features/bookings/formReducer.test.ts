@@ -64,4 +64,23 @@ describe('formReducer', () => {
     expect(state.mode).toEqual({ kind: 'closed' })
     expect(state.values).toMatchObject({ start: '', end: '', title: '' })
   })
+
+  describe('while a save is in flight', () => {
+    const submitting = () => formReducer(typedCreate(), { type: 'submit-start' })
+
+    it('ignores attempts to open another form, so a late result cannot land on it', () => {
+      const edit = booking('b', '13:00', '14:00')
+      expect(formReducer(submitting(), { type: 'open-edit', booking: edit })).toEqual(submitting())
+      expect(formReducer(submitting(), { type: 'open-create', date: '2026-10-23' })).toEqual(submitting())
+    })
+
+    it('ignores a date change instead of unlocking the form', () => {
+      expect(formReducer(submitting(), { type: 'select-date', date: '2026-10-24' })).toEqual(submitting())
+    })
+
+    it('still records the outcome', () => {
+      const failed = formReducer(submitting(), { type: 'submit-error', error: conflict })
+      expect(failed.status).toEqual({ kind: 'error', error: conflict })
+    })
+  })
 })

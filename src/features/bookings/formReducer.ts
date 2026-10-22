@@ -38,6 +38,12 @@ export const closedForm = (date = ''): FormState => ({
  * touch what the user typed. Failed submits change `status` only; `values` survive.
  */
 export function formReducer(state: FormState, action: FormAction): FormState {
+  // While a save is in flight, the form must stay the one that was submitted: otherwise a late
+  // 409 or success would land on a different form and wipe or mislabel what the user typed.
+  if (state.status.kind === 'submitting') {
+    const locked: FormAction['type'][] = ['open-create', 'open-edit', 'select-date']
+    if (locked.includes(action.type)) return state
+  }
   switch (action.type) {
     case 'open-create':
       return {

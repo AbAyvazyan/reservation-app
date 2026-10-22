@@ -39,6 +39,13 @@ export function ConfirmDeleteDialog({ booking, pending, error, onConfirm, onCanc
         event.preventDefault()
         cancel()
       }}
+      onClose={() => {
+        // The browser can still close a modal dialog itself (e.g. a repeated Esc). Keep React in sync;
+        // if a delete is in flight, reopen so the pending state stays visible.
+        if (!booking) return
+        if (pending) ref.current?.showModal()
+        else onCancel()
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) cancel()
       }}

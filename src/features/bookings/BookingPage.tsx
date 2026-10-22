@@ -80,11 +80,12 @@ export function BookingPage({ renderDemoControls }: Props) {
     }
   }
 
-  function closeDeleteDialog() {
+  function closeDeleteDialog({ removed }: { removed: boolean }) {
     setToDelete(null)
     setDeleteError(null)
-    // The dialog restores focus to its trigger, which no longer exists after a delete.
-    requestAnimationFrame(() => headingRef.current?.focus())
+    // Cancel: the dialog restores focus to its Delete button. After a delete that button is gone,
+    // so focus goes to the day heading instead of falling back to <body>.
+    if (removed) requestAnimationFrame(() => headingRef.current?.focus())
   }
 
   function confirmDelete() {
@@ -96,13 +97,13 @@ export function BookingPage({ renderDemoControls }: Props) {
         onSuccess: () => {
           if (form.mode.kind === 'edit' && form.mode.booking.id === target.id) dispatch({ type: 'close' })
           setNotice({ variant: 'success', message: `Deleted ${describeBooking(target)}.` })
-          closeDeleteDialog()
+          closeDeleteDialog({ removed: true })
         },
         onError: (error) => {
           const mapped = toFormError(error)
           if (mapped.kind === 'not-found') {
             setNotice({ variant: 'info', message: 'That booking was already removed by someone else.' })
-            closeDeleteDialog()
+            closeDeleteDialog({ removed: true })
           } else {
             setDeleteError(mapped.message)
           }
@@ -211,7 +212,7 @@ export function BookingPage({ renderDemoControls }: Props) {
         pending={deleteBooking.isPending}
         error={deleteError}
         onConfirm={confirmDelete}
-        onCancel={closeDeleteDialog}
+        onCancel={() => closeDeleteDialog({ removed: false })}
       />
     </div>
   )

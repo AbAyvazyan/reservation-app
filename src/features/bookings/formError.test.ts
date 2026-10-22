@@ -20,6 +20,10 @@ describe('toFormError', () => {
     expect(toFormError(new ApiValidationError('bad', 422, issues))).toMatchObject({ kind: 'validation', issues })
   })
 
+  it('does not claim fields are highlighted when the server sent no issues', () => {
+    expect(toFormError(new ApiValidationError('Bad body', 400, []))).toEqual({ kind: 'unknown', message: 'Bad body' })
+  })
+
   it.each([
     [new NotFoundError('gone'), 'not-found'],
     [new NetworkError('offline'), 'network'],

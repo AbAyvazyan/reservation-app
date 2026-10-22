@@ -21,7 +21,10 @@ export function toFormError(error: unknown): FormError {
     }
   }
   if (error instanceof ApiValidationError) {
-    return { kind: 'validation', issues: error.issues, message: error.message }
+    // Nothing to highlight means "fix the highlighted fields" would mislead; say what the server said.
+    return error.issues.length > 0
+      ? { kind: 'validation', issues: error.issues, message: error.message }
+      : { kind: 'unknown', message: error.message }
   }
   if (error instanceof NotFoundError) {
     return { kind: 'not-found', message: 'This booking was removed by someone else.' }

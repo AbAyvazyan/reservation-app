@@ -1,8 +1,8 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { booking, NOW, TOMORROW, YESTERDAY } from '../../domain/testUtils'
+import { booking, NOW, TODAY, TOMORROW, YESTERDAY } from '../../domain/testUtils'
 import { demoControls } from '../../mocks/controls'
 import { db } from '../../mocks/db'
 import { server } from '../../mocks/node'
@@ -256,5 +256,50 @@ describe('deleting', () => {
     expect(await within(screen.getByRole('dialog')).findByRole('alert')).toHaveTextContent('Could not delete')
     expect(await screen.findByText('Standup')).toBeInTheDocument() // rolled back
     expect(db.all()).toHaveLength(1)
+  })
+})
+
+describe('editing a meeting that is in progress (now = 10:07)', () => {
+  it('shows the locked start as available, keeps end and title editable', async () => {
+    db.reset([booking('l', '10:00', '11:00', TODAY, 'Live')])
+    const { user } = renderPage(TODAY)
+    await user.click(await screen.findByRole('button', { name: /Edit booking 10:00–11:00/ }))
+
+    const start = screen.getByLabelText('Start time')
+    expect(start).toBeDisabled()
+    expect(start).toHaveValue('10:00')
+    // An unavailable option would be labelled "10:00 (unavailable)", so the exact name proves it is offered normally.
+    expect(within(start).getByRole('option', { name: '10:00' })).toBeInTheDocument()
+    expect(screen.getByText(/start cannot change once the meeting has begun/i)).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('End time'), '10:30')
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+    expect(await screen.findByText('Updated booking to 10:00–10:30 “Live”.')).toBeInTheDocument()
+  })
+})
+
+describe('a save that is still in flight', () => {
+  it('cannot be hijacked: a late 409 stays on the form that was submitted', async () => {
+    db.reset([booking('a', '10:00', '11:00', TOMORROW, 'First'), booking('b', '13:00', '14:00', TOMORROW, 'Second')])
+    server.use(
+      http.patch('*/api/bookings/:id', async () => {
+        await delay(60)
+        return HttpResponse.json(
+          { code: 'CONFLICT', message: 'taken', details: { conflicts: [] } },
+          { status: 409 },
+        )
+      }),
+    )
+    const { user } = renderPage()
+    await user.click(await screen.findByRole('button', { name: /Edit booking 10:00–11:00/ }))
+    await user.selectOptions(screen.getByLabelText('End time'), '11:30')
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+    // While A is saving, the user tries to open B.
+    await user.click(screen.getByRole('button', { name: /Edit booking 13:00–14:00/ }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('no longer available')
+    expect(screen.getByLabelText('Start time')).toHaveValue('10:00') // still A, with its typed end
+    expect(screen.getByLabelText('End time')).toHaveValue('11:30')
   })
 })
