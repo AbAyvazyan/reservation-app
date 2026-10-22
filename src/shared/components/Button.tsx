@@ -4,18 +4,20 @@ import styles from './Button.module.css'
 type ButtonProps = ComponentProps<'button'> & {
   variant?: 'primary' | 'secondary' | 'danger'
   loading?: boolean
+  size?: 'md' | 'sm'
 }
 
 export function Button({
   variant = 'secondary',
   loading = false,
+  size = 'md',
   type = 'button',
   disabled = false,
   className,
   children,
   ...rest
 }: ButtonProps) {
-  const classNames = [styles.button, styles[variant], className].filter(Boolean).join(' ')
+  const classNames = [styles.button, styles[variant], styles[size], className].filter(Boolean).join(' ')
 
   return (
     <button

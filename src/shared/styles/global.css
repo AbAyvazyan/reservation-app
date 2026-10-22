@@ -26,6 +26,13 @@ body {
   overflow-wrap: break-word;
 }
 
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
 img,
 picture,
 video,

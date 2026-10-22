@@ -8,44 +8,68 @@
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background-color 150ms ease,
-    filter 150ms ease;
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 80ms ease;
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.55;
+}
+
+/* Compact buttons shrink on precise pointers only; touch screens keep the full 44px target. */
+.sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.875rem;
+}
+
+@media (pointer: fine) {
+  .sm {
+    min-height: 2.25rem;
+  }
 }
 
 .primary {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-primary-contrast);
+  box-shadow: var(--shadow-sm);
 }
 
 .primary:hover:not(:disabled) {
-  filter: brightness(0.92);
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .secondary {
   background: var(--color-surface);
-  border-color: var(--color-border);
+  border-color: var(--color-border-control);
   color: var(--color-text);
 }
 
 .secondary:hover:not(:disabled) {
-  background: var(--color-bg);
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
 }
 
 .danger {
   background: var(--color-danger);
   border-color: var(--color-danger);
   color: var(--color-danger-contrast);
+  box-shadow: var(--shadow-sm);
 }
 
 .danger:hover:not(:disabled) {
