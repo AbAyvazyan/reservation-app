@@ -1,4 +1,5 @@
 import { getStatus } from './bookingStatus'
+import { describeBooking } from './format'
 import { findConflicts } from './intervals'
 import { DAY_END, DAY_START, MAX_DURATION, MIN_DURATION, SLOT_STEP, TITLE_MAX } from './rules'
 import { formatTime, minutesOfDay, parseISODate, parseTime, toISODate } from './time'
@@ -10,9 +11,6 @@ export interface ValidationContext {
   editing?: Booking
   now: Date
 }
-
-const describe = (booking: Booking) =>
-  `${booking.start}–${booking.end}${booking.title ? ` “${booking.title}”` : ''}`
 
 /**
  * Single source of truth for booking rules. Runs in the UI (to disable options)
@@ -78,7 +76,7 @@ export function validateBooking(draft: BookingDraft, ctx: ValidationContext): Va
   if (start < end) {
     const conflicts = findConflicts({ start, end }, date, ctx.existing, ctx.editing?.id)
     if (conflicts.length > 0) {
-      add('OVERLAP', 'form', `Overlaps with ${conflicts.map(describe).join(', ')}.`, { conflicts })
+      add('OVERLAP', 'form', `Overlaps with ${conflicts.map(describeBooking).join(', ')}.`, { conflicts })
     }
   }
 
