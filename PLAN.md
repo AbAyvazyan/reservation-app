@@ -166,7 +166,7 @@ Use `vi.setSystemTime` for "now" (avoid full fake timers with MSW/user-event, or
 
 ## 12. Implementation Steps (commit after each)
 - [x] 1. `git init`; update `.gitignore` (`.codemie/`); remove template content (App.tsx demo, App.css, assets, template README); set `<title>`; install deps; configure vitest, scripts, `.env.example`; `msw init`. Commit "chore: project setup". **Start a time log for the README.**
-- [x] 1b. AI tooling per `AI-Suggestions.md`: root `AGENTS.md` (source of truth) + `CLAUDE.md` containing `@AGENTS.md`; scoped `AGENTS.md` (+ `CLAUDE.md` import) in `src/domain`, `src/api`, `src/mocks`, `src/features`; `.claude/settings.json` hooks + scripts; chosen skills, commands, subagents. Commit "chore: AI tooling".
+- [x] 1b. AI tooling (see `.claude/` and the `AGENTS.md` files): root `AGENTS.md` (source of truth) + `CLAUDE.md` containing `@AGENTS.md`; scoped `AGENTS.md` (+ `CLAUDE.md` import) in `src/domain`, `src/api`, `src/mocks`, `src/features`; `.claude/settings.json` hooks + scripts; chosen skills, commands, subagents. Commit "chore: AI tooling".
 - [x] 2. `domain/` with tests first (TDD). Commit.
 - [x] 3. `api/` (errors, http, parse, BookingsApi, provider) + `mocks/` (db, handlers, demo controls) + api tests. Read msw 3 docs first. Commit.
 - [x] 4. `shared/` (useNow, ErrorBoundary, base components, tokens), query keys, hooks, `useSelectedDate`. Commit.

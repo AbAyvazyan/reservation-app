@@ -123,7 +123,7 @@ Every control has a label; errors are tied to fields with `aria-invalid` / `aria
 ## How I worked with AI
 
 - Full prompt-by-prompt account: [`AI-INTERACTION.md`](./AI-INTERACTION.md).
-- **Plan first.** `PLAN.md` was written and reviewed before any code; `AI-Suggestions.md` records the tooling ideas.
+- **Plan first.** `PLAN.md` was written and reviewed before any code; the tooling it proposed now lives in `.claude/` and the `AGENTS.md` files.
 - **Agent instructions.** `AGENTS.md` (root and per folder) is the single source of truth; `CLAUDE.md` files just import it. Hooks block edits to generated files, lint on edit, and refuse to finish while typecheck or tests fail. Skills, commands and review subagents live in `.claude/`.
 - **Delegation.** Mechanical, well-specified work (tooling files, base components) went to a smaller model with a strict file boundary, and I reviewed the results; the business rules, API layer and conflict handling were written and tested directly.
 - **Where the AI was wrong, and how it was caught.**
