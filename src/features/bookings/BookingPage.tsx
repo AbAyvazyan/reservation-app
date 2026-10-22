@@ -4,6 +4,7 @@ import { toISODate } from '../../domain/time'
 import type { Booking, ISODate } from '../../domain/types'
 import { Alert } from '../../shared/components/Alert'
 import { Button } from '../../shared/components/Button'
+import { ClockIcon, PlusIcon } from '../../shared/components/Icons'
 import { useNow } from '../../shared/useNow'
 import { BookingForm } from './BookingForm'
 import styles from './bookings.module.css'
@@ -114,19 +115,27 @@ export function BookingPage({ renderDemoControls }: Props) {
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <h1>Meeting Room Booking</h1>
-        <p className={styles.muted}>Working hours 09:00–18:00 · bookings of 30 minutes to 2 hours</p>
+      <header className={styles.hero}>
+        <h1 className={styles.heroTitle}>Meeting Room Booking</h1>
+        <ul className={styles.chips} aria-label="Booking rules">
+          <li className={styles.chip}>
+            <ClockIcon size={16} />
+            Working hours 09:00–18:00
+          </li>
+          <li className={styles.chip}>30 min to 2 h per booking</li>
+        </ul>
       </header>
 
-      <DatePicker
-        value={date}
-        today={today}
-        onChange={(next) => {
-          setNotice(null)
-          setDate(next)
-        }}
-      />
+      <div className={styles.toolbar}>
+        <DatePicker
+          value={date}
+          today={today}
+          onChange={(next) => {
+            setNotice(null)
+            setDate(next)
+          }}
+        />
+      </div>
 
       {notice && (
         <Alert variant={notice.variant} onDismiss={() => setNotice(null)}>
@@ -137,15 +146,23 @@ export function BookingPage({ renderDemoControls }: Props) {
       <div className={styles.layout}>
         <section className={styles.panel} aria-labelledby="day-heading">
           <div className={styles.panelHeader}>
-            <h2 id="day-heading" ref={headingRef} tabIndex={-1}>
-              {formatLongDate(date)}
-            </h2>
+            <div>
+              <h2 id="day-heading" ref={headingRef} tabIndex={-1}>
+                {formatLongDate(date)}
+              </h2>
+              {bookings && (
+                <p className={styles.panelCount}>
+                  {bookings.length === 1 ? '1 booking' : `${bookings.length} bookings`}
+                </p>
+              )}
+            </div>
             <Button
               ref={newBookingRef}
               variant="primary"
               disabled={!canCreate}
               onClick={() => dispatch({ type: 'open-create', date })}
             >
+              <PlusIcon size={18} />
               New booking
             </Button>
           </div>

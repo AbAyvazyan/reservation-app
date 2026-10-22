@@ -4,6 +4,7 @@ import { formatTime, parseTime } from '../../domain/time'
 import type { Booking, ISODate } from '../../domain/types'
 import { Alert } from '../../shared/components/Alert'
 import { Button } from '../../shared/components/Button'
+import { CalendarIcon, PlusIcon } from '../../shared/components/Icons'
 import { Skeleton } from '../../shared/components/Skeleton'
 import { BookingCard } from './BookingCard'
 import styles from './bookings.module.css'
@@ -85,9 +86,14 @@ export function DayTimeline({
         {errorAlert}
         {refreshing}
         <div className={styles.empty}>
-          <p>No bookings for this day.</p>
+          <span className={styles.emptyIcon}>
+            <CalendarIcon size={32} />
+          </span>
+          <p className={styles.emptyTitle}>No bookings for this day.</p>
+          <p className={styles.muted}>The room is free from 09:00 to 18:00.</p>
           {canCreate && (
             <Button variant="primary" onClick={onNew}>
+              <PlusIcon size={18} />
               Book the room
             </Button>
           )}
@@ -117,6 +123,7 @@ export function DayTimeline({
               </span>
               {canCreate && (
                 <Button
+                  size="sm"
                   aria-label={`Book from ${formatTime(row.start)} to ${presetEnd(row)}`}
                   onClick={() => onBookGap(formatTime(row.start), presetEnd(row))}
                 >
