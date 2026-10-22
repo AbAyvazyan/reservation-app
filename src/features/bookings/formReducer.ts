@@ -19,7 +19,7 @@ export interface FormState {
 }
 
 export type FormAction =
-  | { type: 'open-create'; date: string; start?: string; end?: string }
+  | { type: 'open-create'; date: string; start?: string; end?: string; title?: string }
   | { type: 'open-edit'; booking: Booking }
   | { type: 'close' }
   | { type: 'change'; field: keyof FormValues; value: string }
@@ -42,7 +42,7 @@ export function formReducer(state: FormState, action: FormAction): FormState {
     case 'open-create':
       return {
         mode: { kind: 'create' },
-        values: { date: action.date, start: action.start ?? '', end: action.end ?? '', title: '' },
+        values: { date: action.date, start: action.start ?? '', end: action.end ?? '', title: action.title ?? '' },
         status: { kind: 'idle' },
       }
     case 'open-edit': {
