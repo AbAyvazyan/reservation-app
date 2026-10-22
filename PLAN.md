@@ -59,7 +59,7 @@ Scripts: `dev`, `build` (`tsc -b && vite build`), `lint`, `preview`.
 ## 4. Dependencies (versions verified compatible)
 - runtime: `@tanstack/react-query@^5` (peer react ^18||^19 ✓)
 - dev: `msw@^3` (peer vite >=6, typescript >=5.9 ✓), `vitest@^5` (peer vite ^6||^7||^8 ✓), `jsdom`, `@testing-library/react@^16`, `@testing-library/dom`, `@testing-library/user-event`, `@testing-library/jest-dom`
-- ⚠️ **msw 3.x is a new major.** Before writing handlers, read its migration guide / docs (WebFetch `https://mswjs.io/docs`) — do not assume the v2 API (`http`, `HttpResponse`, `setupWorker`, `setupServer`) unchanged.
+- ⚠️ **msw 3.x is a new major.** Before writing handlers, read its migration guide / docs (WebFetch `https://mswjs.io/docs`) — do not assume the v2 API (`http`, `HttpResponse`, `delay`, `setupWorker`, `setupServer` are unchanged in v3; verified, but `onUnhandledRequest` was renamed to **`onUnhandledFrame`**).
 - `npx msw init public/ --save` → commit `public/mockServiceWorker.js`.
 - `vite.config.ts`: `defineConfig` from `vitest/config`; `test: { environment: 'jsdom', setupFiles: ['./src/test/setup.ts'] }`. Scripts: `"test": "vitest run"`, `"test:watch": "vitest"`, `"typecheck": "tsc -b"`.
 - Env: `VITE_USE_MOCKS` (default `true`), `VITE_API_BASE_URL` (default `''`). Real API swap = `VITE_USE_MOCKS=false` + base URL. Provide `.env.example`.
@@ -107,7 +107,7 @@ shared/
 test/
   setup.ts                   # jest-dom matchers, MSW node server lifecycle, reset db between tests
   renderWithProviders.tsx    # QueryClient (retry:false) + ApiProvider
-main.tsx                     # if mocks: await import('./mocks/browser') → worker.start({ onUnhandledRequest: 'bypass' }); then render
+main.tsx                     # if mocks: await import('./mocks/browser') → worker.start({ onUnhandledFrame: 'bypass' }); then render
 App.tsx                      # ErrorBoundary > QueryClientProvider > ApiProvider > BookingPage
 ```
 Dependency direction: `features → api → domain`, `mocks → domain`. `domain` imports nothing. UI never calls `fetch` directly.
@@ -165,10 +165,10 @@ Document this in README as the expected real-API contract.
 Use `vi.setSystemTime` for "now" (avoid full fake timers with MSW/user-event, or use `vi.useFakeTimers({ shouldAdvanceTime: true })`).
 
 ## 12. Implementation Steps (commit after each)
-- [ ] 1. `git init`; update `.gitignore` (`.codemie/`); remove template content (App.tsx demo, App.css, assets, template README); set `<title>`; install deps; configure vitest, scripts, `.env.example`; `msw init`. Commit "chore: project setup". **Start a time log for the README.**
-- [ ] 1b. AI tooling per `AI-Suggestions.md`: root `AGENTS.md` (source of truth) + `CLAUDE.md` containing `@AGENTS.md`; scoped `AGENTS.md` (+ `CLAUDE.md` import) in `src/domain`, `src/api`, `src/mocks`, `src/features`; `.claude/settings.json` hooks + scripts; chosen skills, commands, subagents. Commit "chore: AI tooling".
-- [ ] 2. `domain/` with tests first (TDD). Commit.
-- [ ] 3. `api/` (errors, http, parse, BookingsApi, provider) + `mocks/` (db, handlers, demo controls) + api tests. Read msw 3 docs first. Commit.
+- [x] 1. `git init`; update `.gitignore` (`.codemie/`); remove template content (App.tsx demo, App.css, assets, template README); set `<title>`; install deps; configure vitest, scripts, `.env.example`; `msw init`. Commit "chore: project setup". **Start a time log for the README.**
+- [x] 1b. AI tooling per `AI-Suggestions.md`: root `AGENTS.md` (source of truth) + `CLAUDE.md` containing `@AGENTS.md`; scoped `AGENTS.md` (+ `CLAUDE.md` import) in `src/domain`, `src/api`, `src/mocks`, `src/features`; `.claude/settings.json` hooks + scripts; chosen skills, commands, subagents. Commit "chore: AI tooling".
+- [x] 2. `domain/` with tests first (TDD). Commit.
+- [x] 3. `api/` (errors, http, parse, BookingsApi, provider) + `mocks/` (db, handlers, demo controls) + api tests. Read msw 3 docs first. Commit.
 - [ ] 4. `shared/` (useNow, ErrorBoundary, base components, tokens), query keys, hooks, `useSelectedDate`. Commit.
 - [ ] 5. UI: page, date picker, timeline, card, form + reducer, delete dialog, styles, responsive. Commit.
 - [ ] 6. Conflict / 404 / error flows end-to-end + DemoControls + UI tests (conflict test first). Commit.
