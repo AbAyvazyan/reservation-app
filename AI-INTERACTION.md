@@ -112,30 +112,30 @@ What I kept in my own loop: the domain rules and their tests, the API layer and 
 ## 7. Commit history (one logical change each)
 
 ```
-5b847ed docs: add task definition, implementation plan and AI tooling proposal
-53f4456 chore: set up project tooling for booking app
-a6352e9 feat(domain): add booking rules, validation and availability with tests
-e4ede80 chore: add AI tooling (agent guides, hooks, skills, commands, subagents)
-73c4187 chore: add trailing newline to domain agent guides
-eac8029 docs: tick completed plan steps and fix MSW 3 option name
-c678680 feat(api): add typed HTTP client behind a replaceable BookingsApi
-cf5b767 feat(mocks): add MSW mock backend with demo controls and API tests
-c3991cd refactor(domain): extract describeBooking for reuse by the UI
-0f00749 feat(bookings): add data hooks, form state machine and URL-synced date
-d5883ed feat(domain): add freeGaps for bookable gaps in a day
-c96a72f feat(shared): add design tokens and accessible base components
-b2d6927 feat(bookings): add day view, booking form and delete confirmation
-fdc10d8 feat(app): wire providers, config and MSW bootstrap with demo controls
-e5c7873 test(bookings): cover day states, create/edit/delete and the 409 flow
-5c0fa7f docs: update agent instructions, enable stop hook, tick plan steps 4-6
-63a121e ci: run lint, typecheck, tests and build on push and pull requests
-b957968 docs: write README with architecture, conflict handling and assumptions
-903aa14 fix(domain): keep an in-progress booking's own start selectable
-2941a08 fix(bookings): protect a form while it saves and tidy dialog/a11y behaviour
-0375b5d feat(mocks): scope injected failures to loads or saves
-f5beecf docs: reflect review fixes, known edge cases and scoped demo failures
-e8cba0c style(shared): refresh design tokens, buttons and add decorative icons
-12d8765 style(bookings): redesign page with hero, time-column cards and empty state
+bb976bd docs: add task definition, implementation plan and AI tooling proposal
+d0795f6 chore: set up project tooling for booking app
+2ab7087 feat(domain): add booking rules, validation and availability with tests
+40d8669 chore: add AI tooling (agent guides, hooks, skills, commands, subagents)
+2e94a27 chore: add trailing newline to domain agent guides
+2a9bd41 docs: tick completed plan steps and fix MSW 3 option name
+7384683 feat(api): add typed HTTP client behind a replaceable BookingsApi
+46dd5cb feat(mocks): add MSW mock backend with demo controls and API tests
+b7856fa refactor(domain): extract describeBooking for reuse by the UI
+cd45856 feat(bookings): add data hooks, form state machine and URL-synced date
+ab52dea feat(domain): add freeGaps for bookable gaps in a day
+6a08cd0 feat(shared): add design tokens and accessible base components
+acc31de feat(bookings): add day view, booking form and delete confirmation
+331a3d0 feat(app): wire providers, config and MSW bootstrap with demo controls
+5cbac56 test(bookings): cover day states, create/edit/delete and the 409 flow
+ace379b docs: update agent instructions, enable stop hook, tick plan steps 4-6
+d2d3214 ci: run lint, typecheck, tests and build on push and pull requests
+deba9d9 docs: write README with architecture, conflict handling and assumptions
+f9e3710 fix(domain): keep an in-progress booking's own start selectable
+9abac10 fix(bookings): protect a form while it saves and tidy dialog/a11y behaviour
+3529ea8 feat(mocks): scope injected failures to loads or saves
+ddf6e44 docs: reflect review fixes, known edge cases and scoped demo failures
+1b0bfcd style(shared): refresh design tokens, buttons and add decorative icons
+cd9d9b8 style(bookings): redesign page with hero, time-column cards and empty state
 ```
 
 ## 8. Verification state when this file was written
