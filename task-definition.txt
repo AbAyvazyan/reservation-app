@@ -1,0 +1,80 @@
+Meeting Room Booking Interface
+
+Task
+Implement an interface for booking a meeting room during the working day.
+Working day: 09:00–18:00.
+The user must be able to:
+
+select a date;
+view existing bookings for the selected date;
+select a start and end time;
+create a booking;
+edit a booking;
+delete a booking.
+Display format is your choice: list, timeline, slot grid, or day calendar.
+
+Business Rules
+
+Start and end times must be within the working day.
+start < end.
+Minimum duration is 30 minutes.
+Maximum duration is 2 hours.
+Bookings cannot overlap.
+Touching boundaries is not considered a conflict: 10:00–11:00 and 11:00–12:00 is allowed.
+Past time cannot be booked.
+For today’s date, past slots are unavailable.
+For past dates, creating a booking is unavailable.
+When editing, the current booking must not conflict with itself.
+The server may return a conflict even if the UI considered the slot free.
+This is expected behavior, not a bug.
+The UI must handle it correctly: show a clear message, refresh the list of bookings, and not lose the data entered by the user.
+
+What is important to demonstrate
+
+Careful handling of business logic and validation.
+Correct UI states: loading, empty state, error, form submission.
+Handling of server errors, including conflicts.
+Separation of the API layer and the UI.
+Readable TypeScript and a clear code structure.
+Responsiveness and basic accessibility.
+Design is not evaluated as an artistic work — engineering accuracy is evaluated.
+
+Stack
+
+React / Next.js / Vue.js.
+TypeScript — mandatory.
+Styles, state management, forms — your choice.
+UI libraries and icons may be used.
+A real backend, authentication, database, and integrations are not needed.
+If a server is needed, implement a mock API (MSW, Route Handlers, in-memory store, etc.).
+The network layer must be separated from the UI and easily replaceable with a real API.
+
+Approximate contract:
+GET /api/bookings?date=YYYY-MM-DD
+POST /api/bookings
+PATCH /api/bookings/:id
+DELETE /api/bookings/:id
+
+type Booking = {
+id: string;
+date: string; // YYYY-MM-DD
+start: string; // HH:mm
+end: string; // HH:mm
+title?: string;
+};
+
+The server validates the business rules and can return a conflict (409).
+
+Timebox
+Guideline: 4–6 hours.
+If you don’t finish in time — stop and describe in the README what you would complete and what your priorities were.
+
+What to submit
+
+A link to the repository.
+README: how to run it, what was done, what was not done, how much time it took.
+A link to the deployed demo (Vercel, Netlify, etc.)
+Chat transcript with the AI
+
+If something seems ambiguous — ask questions.
+This is better than silent guesses.
