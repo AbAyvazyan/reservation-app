@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { endOptions, startOptions } from './availability'
+import { endOptions, freeGaps, startOptions } from './availability'
 import { booking, NOW, TODAY, TOMORROW, YESTERDAY } from './testUtils'
 
 const ctx = (existing = [booking('a', '10:00', '11:00')]) => ({ existing, now: NOW })
@@ -63,5 +63,44 @@ describe('endOptions', () => {
     const own = booking('a', '10:00', '11:00')
     const options = endOptions(TOMORROW, '10:00', { existing: [own], editing: own, now: NOW })
     expect(options.every((o) => !o.disabled)).toBe(true)
+  })
+})
+describe('freeGaps (now = 10:07 on 2026-10-22)', () => {
+  const g = (date: string, existing: ReturnType<typeof booking>[]) =>
+    freeGaps(date, existing, NOW).map((x) => `${x.start / 60}-${x.end / 60}`)
+
+  it('returns the whole working day on an empty future date', () => {
+    expect(g(TOMORROW, [])).toEqual(['9-18'])
+  })
+
+  it('splits around bookings and keeps touching neighbours gap-free', () => {
+    const existing = [booking('a', '10:00', '11:00'), booking('b', '11:00', '12:00'), booking('c', '17:30', '18:00')]
+    expect(g(TOMORROW, existing)).toEqual(['9-10', '12-17.5'])
+  })
+
+  it('drops gaps shorter than the minimum duration', () => {
+    const existing = [booking('a', '09:15', '17:45')]
+    expect(g(TOMORROW, existing)).toEqual([]) // 15 min on each side
+  })
+
+  it('handles unsorted input and ignores other dates', () => {
+    const existing = [booking('b', '14:00', '15:00'), booking('a', '10:00', '11:00'), booking('x', '09:00', '18:00', '2026-10-25')]
+    expect(g(TOMORROW, existing)).toEqual(['9-10', '11-14', '15-18'])
+  })
+
+  it('starts today from the next grid slot after now', () => {
+    expect(g(TODAY, [])).toEqual(['10.25-18']) // 10:07 -> 10:15
+  })
+
+  it('treats a meeting in progress as busy from the clipped start', () => {
+    expect(g(TODAY, [booking('l', '10:00', '11:00', TODAY)])).toEqual(['11-18'])
+  })
+
+  it('has no gaps on past dates', () => {
+    expect(g(YESTERDAY, [])).toEqual([])
+  })
+
+  it('has no gaps late in the day today', () => {
+    expect(freeGaps(TODAY, [], new Date(2026, 9, 22, 17, 45))).toEqual([])
   })
 })
