@@ -38,6 +38,15 @@ describe('startOptions', () => {
   })
 })
 
+describe('startOptions while editing a meeting in progress', () => {
+  it('keeps the booking\'s own start available even after most of it has elapsed', () => {
+    const own = booking('l', '10:00', '11:00', TODAY)
+    const late = new Date(2026, 9, 22, 10, 45)
+    const option = startOptions(TODAY, { existing: [own], editing: own, now: late }).find((o) => o.value === '10:00')
+    expect(option).toEqual({ value: '10:00', disabled: false })
+  })
+})
+
 describe('endOptions', () => {
   it('offers ends from +30 min up to +2 h', () => {
     expect(endOptions(TOMORROW, '12:00', ctx([])).map((o) => o.value)).toEqual([

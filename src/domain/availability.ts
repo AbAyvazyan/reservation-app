@@ -19,14 +19,14 @@ function toOption(value: TimeHHmm, issues: ReturnType<typeof validateBooking>): 
 
 /** A start is enabled only if at least the minimum-length booking fits from it. */
 export function startOptions(date: string, ctx: ValidationContext): TimeOption[] {
+  const own = ctx.editing?.date === date ? ctx.editing : undefined
   const options: TimeOption[] = []
   for (let start = DAY_START; start <= DAY_END - MIN_DURATION; start += SLOT_STEP) {
     const value = formatTime(start)
-    const issues = validateBooking(
-      { date, start: value, end: formatTime(start + MIN_DURATION) },
-      ctx,
-    )
-    options.push(toOption(value, issues))
+    // The booking's own start is judged with its own end: a 30-minute probe from an
+    // in-progress start would end in the past and wrongly mark the current value unavailable.
+    const end = own && value === own.start ? own.end : formatTime(start + MIN_DURATION)
+    options.push(toOption(value, validateBooking({ date, start: value, end }, ctx)))
   }
   return options
 }
