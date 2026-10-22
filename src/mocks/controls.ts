@@ -6,7 +6,9 @@ import { db } from './db'
 
 const SLOW_LATENCY_MS = 2000
 
-let failNext = false
+type FailTarget = 'any' | 'read' | 'write'
+
+let failNext: FailTarget | null = null
 let slow = false
 
 /**
@@ -14,16 +16,19 @@ let slow = false
  * Only DemoControls.tsx should call these.
  */
 export const demoControls = {
-  /** Make the next request (any method) fail with a 500. */
-  failNextRequest() {
-    failNext = true
+  /**
+   * Make the next matching request fail with a 500. 'read' = GET (loading a day),
+   * 'write' = POST/PATCH/DELETE (saving). Scoping keeps background prefetches from eating it.
+   */
+  failNextRequest(target: FailTarget = 'any') {
+    failNext = target
   },
   setSlowNetwork(enabled: boolean) {
     slow = enabled
   },
   isSlowNetwork: () => slow,
   reset() {
-    failNext = false
+    failNext = null
     slow = false
   },
 
@@ -57,10 +62,12 @@ export const demoControls = {
 }
 
 /** Consumed by the request handlers. */
-export function takeInjectedFailure(): boolean {
-  const shouldFail = failNext
-  failNext = false
-  return shouldFail
+export function takeInjectedFailure(method: string): boolean {
+  if (failNext === null) return false
+  const isRead = method === 'GET'
+  if ((failNext === 'read' && !isRead) || (failNext === 'write' && isRead)) return false
+  failNext = null
+  return true
 }
 
 export function extraLatency(): number {

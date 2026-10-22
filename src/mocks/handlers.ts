@@ -58,10 +58,10 @@ function rejectIfInvalid(draft: BookingDraft, editing?: Booking) {
 
 export function createHandlers({ latency }: HandlerConfig) {
   /** Simulated network: latency plus the optional one-shot failure from the demo controls. */
-  const simulateNetwork = async () => {
+  const simulateNetwork = async (method: string) => {
     const ms = latency() + extraLatency()
     if (ms > 0) await delay(ms)
-    if (takeInjectedFailure()) {
+    if (takeInjectedFailure(method)) {
       return errorResponse(500, 'INTERNAL', 'Something went wrong on our side. Please try again.')
     }
     return null
@@ -69,7 +69,7 @@ export function createHandlers({ latency }: HandlerConfig) {
 
   return [
     http.get('*/api/bookings', async ({ request }) => {
-      const failure = await simulateNetwork()
+      const failure = await simulateNetwork(request.method)
       if (failure) return failure
 
       const date = parseISODate(new URL(request.url).searchParams.get('date') ?? '')
@@ -80,7 +80,7 @@ export function createHandlers({ latency }: HandlerConfig) {
     }),
 
     http.post('*/api/bookings', async ({ request }) => {
-      const failure = await simulateNetwork()
+      const failure = await simulateNetwork(request.method)
       if (failure) return failure
 
       const draft = readDraft(await request.json().catch(() => null))
@@ -92,7 +92,7 @@ export function createHandlers({ latency }: HandlerConfig) {
     }),
 
     http.patch('*/api/bookings/:id', async ({ request, params }) => {
-      const failure = await simulateNetwork()
+      const failure = await simulateNetwork(request.method)
       if (failure) return failure
 
       const current = db.get(String(params.id))
@@ -115,8 +115,8 @@ export function createHandlers({ latency }: HandlerConfig) {
       return json(updated)
     }),
 
-    http.delete('*/api/bookings/:id', async ({ params }) => {
-      const failure = await simulateNetwork()
+    http.delete('*/api/bookings/:id', async ({ request, params }) => {
+      const failure = await simulateNetwork(request.method)
       if (failure) return failure
 
       const current = db.get(String(params.id))

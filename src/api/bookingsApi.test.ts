@@ -101,6 +101,16 @@ describe('error mapping', () => {
     await expect(api.list(TOMORROW)).resolves.toEqual([])
   })
 
+  it('scopes an injected failure to reads or writes', async () => {
+    demoControls.failNextRequest('write')
+    await expect(api.list(TOMORROW)).resolves.toEqual([]) // a read is not the target
+    await expect(api.create(draft('10:00', '11:00'))).rejects.toBeInstanceOf(ServerError)
+
+    demoControls.failNextRequest('read')
+    await expect(api.create(draft('10:00', '11:00'))).resolves.toBeDefined() // a write is not the target
+    await expect(api.list(TOMORROW)).rejects.toBeInstanceOf(ServerError)
+  })
+
   it('connection failure -> NetworkError', async () => {
     server.use(http.get('*/api/bookings', () => HttpResponse.error()))
     await expect(api.list(TOMORROW)).rejects.toBeInstanceOf(NetworkError)

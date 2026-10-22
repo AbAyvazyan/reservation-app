@@ -30,11 +30,19 @@ export function DemoControls({ date }: { date: ISODate }) {
         </Button>
         <Button
           onClick={() => {
-            demoControls.failNextRequest()
-            setMessage('The next request will fail with a 500.')
+            demoControls.failNextRequest('read')
+            setMessage('The next load will fail with a 500 (try changing the date).')
           }}
         >
-          Fail next request
+          Fail next load
+        </Button>
+        <Button
+          onClick={() => {
+            demoControls.failNextRequest('write')
+            setMessage('The next save or delete will fail with a 500.')
+          }}
+        >
+          Fail next save
         </Button>
         <label>
           <input
