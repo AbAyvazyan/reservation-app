@@ -4,3 +4,7 @@
 - On ConflictError: show alert naming the conflict, invalidate the day, keep form values, focus the alert.
 - Prefer native elements (`<select>`, `<dialog>`, `<button>`) over ARIA re-implementations.
 - Before finishing a component, run the `ui-state-audit` skill.
+- Form state lives in `formReducer`; a failed submit changes `status` only. Never reset `values` on error and never key the form by data that refetches.
+- Create/update are NOT optimistic (server may answer 409); delete is optimistic with rollback. Invalidate `bookingKeys.all` in `onSettled`.
+- Availability shown in the UI comes from `src/domain` (`startOptions`, `endOptions`, `freeGaps`, `validateBooking`) — never re-implement a rule in a component.
+- `BookingPage.test.tsx` covers the conflict flow; extend it when you touch submit, delete or error handling.

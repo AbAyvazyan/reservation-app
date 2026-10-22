@@ -15,7 +15,9 @@ mocks → domain
 - `src/domain` — pure business rules. No React, no fetch, no Date.now().
 - `src/api` — network layer behind the `BookingsApi` interface. No React except `ApiProvider.tsx`.
 - `src/mocks` — MSW handlers + in-memory DB. Never imported by `features`.
-- `src/features/bookings` — UI + TanStack Query hooks. Never calls `fetch` directly.
+- `src/features/bookings` — UI + TanStack Query hooks. Never calls `fetch` directly and never imports `src/mocks` (dev tooling is injected through `BookingPage`'s `renderDemoControls` slot from `App.tsx`).
+- `src/shared` — app-agnostic UI building blocks (`components/`, `styles/`) and `useNow`. Imports nothing from `features`, `api` or `mocks`.
+- `src/config.ts` reads env (`VITE_USE_MOCKS`, `VITE_API_BASE_URL`); `src/queryClient.ts` holds query defaults (no retry on 4xx).
 
 ## Non-negotiable business rules
 Working day 09:00–18:00 · start < end · 30 min ≤ duration ≤ 120 min · 15-min grid ·
@@ -33,11 +35,16 @@ Every rule lives in `src/domain/validation.ts` and is reused by the mock server.
 - Accessibility: every input has a `<label>`, errors use `aria-describedby` + `aria-invalid`, dialogs use native `<dialog>`.
 - No new dependencies without stating why in the PR/commit message.
 - Comments only for non-obvious "why".
+- File names must differ by more than letter case (macOS/Windows are case-insensitive: `controls.ts` vs `DemoControls.tsx`, not `demoControls.ts` vs `DemoControls.tsx`).
+- One export kind per `.tsx` file (react-refresh): components in `Foo.tsx`, hooks/contexts in `.ts` files.
+- MSW 3: use `onUnhandledFrame` (not v2's `onUnhandledRequest`); `http`, `HttpResponse`, `delay`, `setupWorker`, `setupServer` are unchanged.
 
 ## Testing
 - Domain: table-driven tests for every rule, including edges (09:00, 18:00, 30/120 min, touching).
 - UI: test behaviour through the accessible tree (`getByRole`, `getByLabelText`), not class names.
-- Use MSW node server for API/UI tests; `vi.setSystemTime` for time.
+- Use MSW node server for API/UI tests (`src/test/setup.ts` wires it, empties the mock DB before each test and stubs `<dialog>`); `vi.setSystemTime` for time.
+- Render with `renderWithProviders` / `renderHookWithProviders` (`src/test/renderWithProviders.tsx`); use `testApi` with `baseUrl: 'http://localhost'` (Node fetch needs absolute URLs).
+- The 409 test in `BookingPage.test.tsx` is the contract for the key requirement. If you change form or mutation code, mutation-check it: break the behaviour and confirm the test fails.
 
 ## Don't
 - Don't edit `public/mockServiceWorker.js` (generated) or `package-lock.json` by hand.

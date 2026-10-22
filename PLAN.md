@@ -84,7 +84,8 @@ api/                         # network layer — no React imports
 mocks/                       # MSW; dynamically imported in main.tsx only when VITE_USE_MOCKS
   db.ts                      # in-memory store + seed relative to today (incl. one in-progress booking if within hours)
   handlers.ts                # GET/POST/PATCH/DELETE; reuse domain/validation on the server side; latency 300–600 ms
-  demoControls.ts            # simulateOtherUserBooking(date), failNextRequest(), setSlowNetwork(bool)
+  controls.ts                # demoControls: simulateOtherUserBooking(date), failNextRequest(), setSlowNetwork(bool)  (not `demoControls.ts`: collides with DemoControls.tsx on case-insensitive file systems)
+  DemoControls.tsx           # reviewer-facing panel; injected into BookingPage via renderDemoControls
   browser.ts / node.ts       # worker (respect import.meta.env.BASE_URL for SW url) / server for tests
 features/bookings/
   queryKeys.ts               # bookingKeys = { all: ['bookings'], byDate: (d) => ['bookings', d] } as const
@@ -99,7 +100,6 @@ features/bookings/
   BookingCard.tsx            # time range, title, status badge (text, not colour-only), Edit/Delete per status
   BookingForm.tsx            # start/end <select> (15-min steps, disabled options with reason), title; inline errors (aria-describedby); form alert
   ConfirmDeleteDialog.tsx    # native <dialog>.showModal() (built-in focus trap & Esc), focus returns to trigger
-  DemoControls.tsx           # mocks-only panel (see §3)
 shared/
   useNow.ts                  # ticks every minute (aligned to minute boundary) → recompute availability, handles midnight rollover
   components/                # Button (loading state), Alert, Skeleton, ErrorBoundary (app-level fallback)
@@ -169,9 +169,9 @@ Use `vi.setSystemTime` for "now" (avoid full fake timers with MSW/user-event, or
 - [x] 1b. AI tooling per `AI-Suggestions.md`: root `AGENTS.md` (source of truth) + `CLAUDE.md` containing `@AGENTS.md`; scoped `AGENTS.md` (+ `CLAUDE.md` import) in `src/domain`, `src/api`, `src/mocks`, `src/features`; `.claude/settings.json` hooks + scripts; chosen skills, commands, subagents. Commit "chore: AI tooling".
 - [x] 2. `domain/` with tests first (TDD). Commit.
 - [x] 3. `api/` (errors, http, parse, BookingsApi, provider) + `mocks/` (db, handlers, demo controls) + api tests. Read msw 3 docs first. Commit.
-- [ ] 4. `shared/` (useNow, ErrorBoundary, base components, tokens), query keys, hooks, `useSelectedDate`. Commit.
-- [ ] 5. UI: page, date picker, timeline, card, form + reducer, delete dialog, styles, responsive. Commit.
-- [ ] 6. Conflict / 404 / error flows end-to-end + DemoControls + UI tests (conflict test first). Commit.
+- [x] 4. `shared/` (useNow, ErrorBoundary, base components, tokens), query keys, hooks, `useSelectedDate`. Commit.
+- [x] 5. UI: page, date picker, timeline, card, form + reducer, delete dialog, styles, responsive. Commit.
+- [x] 6. Conflict / 404 / error flows end-to-end + DemoControls + UI tests (conflict test first). Commit.
 - [ ] 7. GitHub Actions `.github/workflows/ci.yml`: `npm ci`, `lint`, `typecheck`, `test`, `build` on push/PR. Commit.
 - [ ] 8. Per the user's global CLAUDE.md: run `snyk_code_scan` on new first-party code; fix findings; rescan until clean. Also `snyk_sca_scan` for deps.
 - [ ] 9. README (§13). Commit.
