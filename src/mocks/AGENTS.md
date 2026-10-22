@@ -6,3 +6,4 @@
 - Server rules: invalid input -> 422, taken slot -> 409 with `details.conflicts`, unknown id -> 404, past booking edit/delete -> 422 `NOT_EDITABLE`.
 - Use `onUnhandledFrame` (MSW 3), not `onUnhandledRequest`.
 - Check MSW 3 docs before using an API you remember from v2.
+- Injected failures are scoped (`failNextRequest('read' | 'write' | 'any')`) so background prefetches of neighbouring days cannot consume a failure meant for a save.

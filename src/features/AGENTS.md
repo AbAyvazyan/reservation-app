@@ -8,3 +8,5 @@
 - Create/update are NOT optimistic (server may answer 409); delete is optimistic with rollback. Invalidate `bookingKeys.all` in `onSettled`.
 - Availability shown in the UI comes from `src/domain` (`startOptions`, `endOptions`, `freeGaps`, `validateBooking`) — never re-implement a rule in a component.
 - `BookingPage.test.tsx` covers the conflict flow; extend it when you touch submit, delete or error handling.
+- While a save is in flight the reducer ignores `open-create`, `open-edit` and `select-date`; keep that guard, it stops a late 409 landing on a different form.
+- Cancelling the delete dialog must leave focus to the native restore; only move focus to the day heading after a delete.

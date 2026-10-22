@@ -10,7 +10,7 @@ A single-room booking interface for a 09:00–18:00 working day: pick a date, se
 ```bash
 npm install
 npm run dev        # http://localhost:5173, mock API enabled by default
-npm test           # 195 tests (Vitest + Testing Library + MSW)
+npm test           # 203 tests (Vitest + Testing Library + MSW)
 npm run lint && npm run typecheck && npm run build
 ```
 
@@ -33,7 +33,8 @@ Node 24 was used. Environment (see `.env.example`):
 | Control | What it shows |
 |---|---|
 | Simulate another user's booking | Inserts a booking behind the UI's back. Then try to book that exact time to see the 409 flow. |
-| Fail next request | The next request returns 500: error states, retry, rollback of a delete. |
+| Fail next load | The next GET returns 500 (e.g. change the date): error state with Retry. |
+| Fail next save | The next create/update/delete returns 500: the form keeps its values; a failed delete rolls back. Scoped so background loading of neighbouring days cannot swallow it. |
 | Slow network (+2 s) | Loading and submitting states. |
 
 ## Business rules
@@ -127,6 +128,7 @@ Every control has a label; errors are tied to fields with `aria-invalid` / `aria
   - The plan used MSW 2's `onUnhandledRequest`; reading MSW 3's type definitions showed it is now `onUnhandledFrame`.
   - Two files, `demoControls.ts` and `DemoControls.tsx`, differed only by case and broke the TypeScript build on macOS; renamed.
   - A first test run passed everything, so I deliberately broke the form-reset behaviour to prove the conflict test actually fails.
+  - An independent review pass (a second model) found real defects after all tests were green: the start of a meeting in progress was shown as "(unavailable)", and a slow save could deliver its 409 to a different form. Both are fixed with regression tests that fail without the fix.
   - Review of the plan found that "now" would never advance (fixed with `useNow`) and that a meeting in progress had no defined rules.
 
 ## Done / not done
@@ -139,6 +141,8 @@ Every control has a label; errors are tied to fields with `aria-invalid` / `aria
 - **Snyk security scans were not run** (the CLI was not authenticated).
 - Time zones are browser-local; multiple rooms, recurring bookings, i18n and live updates (SSE/websocket) are out of scope.
 - Editing a booking cannot change its date.
+- Known edge cases left alone: at midnight, a page showing "today" rolls to the new day and closes an open edit form; if an upcoming booking starts while it is being edited, its start becomes locked.
+- The dialog's behaviour on a repeated Esc is handled in code but was only checked in jsdom, not in each browser.
 
 ## Time spent
 

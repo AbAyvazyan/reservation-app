@@ -177,7 +177,7 @@ Use `vi.setSystemTime` for "now" (avoid full fake timers with MSW/user-event, or
 - [x] 9. README (§13). Commit.
 - [ ] 10. `npm run lint && npm run typecheck && npm test && npm run build` green; `npm run preview` works with MSW. Deploy (Vercel/Netlify, build `npm run build`, output `dist`), confirm `mockServiceWorker.js` served. Push only when the user asks. User exports the chat transcript.
 
-- [ ] 11. Final code review: run `/code-review` with the Sonnet 5.5 model (and the `react-reviewer` / `a11y-auditor` subagents) over the whole diff once everything is finished. Fix confirmed findings in separate `fix:` commits, then re-run the quality gate.
+- [x] 11. Final code review: run `/code-review` with the Sonnet 5.5 model (and the `react-reviewer` / `a11y-auditor` subagents) over the whole diff once everything is finished. Fix confirmed findings in separate `fix:` commits, then re-run the quality gate.
 
 **Commit policy.** Commit meaningfully: one logical change per commit (never one giant commit), Conventional Commits (`chore:`, `feat:`, `test:`, `fix:`, `docs:`, `ci:`), messages explain the why, tests committed with the code they cover, each commit leaves lint/typecheck/tests green. Review `git status` before staging; stage files by name. Commits end with the attribution trailer required by the session. Never push unless asked.
 
