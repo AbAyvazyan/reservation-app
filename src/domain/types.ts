@@ -18,23 +18,26 @@ export interface BookingDraft {
   title?: string
 }
 
-export type IssueCode =
-  | 'INVALID_DATE'
-  | 'INVALID_TIME'
-  | 'OUT_OF_HOURS'
-  | 'START_NOT_BEFORE_END'
-  | 'TOO_SHORT'
-  | 'TOO_LONG'
-  | 'NOT_ON_GRID'
-  | 'PAST_DATE'
-  | 'PAST_TIME'
-  | 'END_IN_PAST'
-  | 'OVERLAP'
-  | 'TITLE_TOO_LONG'
-  | 'NOT_EDITABLE'
-  | 'START_LOCKED'
+export const ISSUE_CODES = [
+  'INVALID_DATE',
+  'INVALID_TIME',
+  'OUT_OF_HOURS',
+  'START_NOT_BEFORE_END',
+  'TOO_SHORT',
+  'TOO_LONG',
+  'NOT_ON_GRID',
+  'PAST_DATE',
+  'PAST_TIME',
+  'END_IN_PAST',
+  'OVERLAP',
+  'TITLE_TOO_LONG',
+  'NOT_EDITABLE',
+  'START_LOCKED',
+] as const
+export type IssueCode = (typeof ISSUE_CODES)[number]
 
-export type IssueField = 'date' | 'start' | 'end' | 'title' | 'form'
+export const ISSUE_FIELDS = ['date', 'start', 'end', 'title', 'form'] as const
+export type IssueField = (typeof ISSUE_FIELDS)[number]
 
 export interface ValidationIssue {
   code: IssueCode
