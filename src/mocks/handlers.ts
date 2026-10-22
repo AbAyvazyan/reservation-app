@@ -4,7 +4,7 @@ import { asISODate, asTime, parseISODate } from '../domain/time'
 import type { Booking, BookingDraft, ValidationIssue } from '../domain/types'
 import { validateBooking } from '../domain/validation'
 import { db } from './db'
-import { extraLatency, takeInjectedFailure } from './demoControls'
+import { extraLatency, takeInjectedFailure } from './controls'
 
 export interface HandlerConfig {
   /** Base latency per request in ms. */

@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { booking, NOW, TOMORROW } from '../domain/testUtils'
 import { db } from '../mocks/db'
-import { demoControls } from '../mocks/demoControls'
+import { demoControls } from '../mocks/controls'
 import { server } from '../mocks/node'
 import { createHttpBookingsApi } from './bookingsApi'
 import {

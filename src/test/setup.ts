@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
 import { db } from '../mocks/db'
-import { demoControls } from '../mocks/demoControls'
+import { demoControls } from '../mocks/controls'
 import { server } from '../mocks/node'
 
 beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
